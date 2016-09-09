@@ -35,4 +35,4 @@ else
     end), zstd)
 end
 
-@BinDeps.install Dict(:libzstd => :libzstd)
+@BinDeps.install Dict(:zstd => :libzstd)

@@ -17,4 +17,11 @@ using Base.Test
         err_txt = sprint(showerror, err)
         @test startswith(err_txt, "ZStd: Error (generic)")
     end
+
+    @test typeof(ZStd.maxcompressedsize(1)) == Int
+    @test ZStd.maxcompressedsize(1) > 0
+    @test typeof(ZStd.maxcompressedsize(UInt(1))) == UInt
+    @test ZStd.maxcompressedsize(UInt(1)) > UInt(0)
+
+    @test ZStd.ZSTD_VERSION == v"1.0.0"
 end

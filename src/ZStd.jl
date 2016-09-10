@@ -36,4 +36,27 @@ An integer representing the maximum compression level available.
 const MAX_COMPRESSION = Int(ccall((:ZSTD_maxCLevel, libzstd), Cint, ()))
 
 
+"""
+    maxcompressedsize(srcsize)
+
+Get the maximum compressed size in the worst-case scenario for a given input size.
+"""
+function maxcompressedsize(srcsize::Csize_t)
+    return ccall((:ZSTD_compressBound, libzstd), Csize_t, (Csize_t, ), srcsize)
+end
+
+maxcompressedsize(srcsize::Int) = Int(maxcompressedsize(Csize_t(srcsize)))
+
+
+"""
+    ZStd.ZSTD_VERSION
+
+The version of Zstandard in use.
+"""
+const ZSTD_VERSION = let
+    ver = Int(ccall((:ZSTD_versionNumber, libzstd), Cuint, ()))
+    str = join(match(r"(\d+)(\d{2})(\d{2})$", string(ver)).captures, ".")
+    VersionNumber(str)
+end
+
 end # module

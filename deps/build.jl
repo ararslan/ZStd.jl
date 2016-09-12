@@ -2,24 +2,17 @@ using BinDeps
 
 @BinDeps.setup
 
-zstd = library_dependency("zstd", aliases=["libzstd", "libzstd.1"])
+vers = v"1.0.0"
+
+zstd = library_dependency("zstd", aliases=["libzstd", "libzstd.$(vers.major)", "libzstd.$vers"])
 
 if is_apple()
     using Homebrew
     provides(Homebrew.HB, "zstd", zstd, os=:Darwin)
+elseif is_windows()
+    dlurl = "https://dl.bintray.com/ararslan/generic/libzstd-$(Sys.WORD_SIZE).zip"
+    provides(Binaries, URI(dlurl), zstd, os=:Windows)
 else
-    if isdir(srcdir(zstd))
-        rm(srcdir(zstd), recursive=true)
-        mkdir(srcdir(zstd))
-    end
-
-    if isdir(BinDeps.downloadsdir(zstd))
-        rm(BinDeps.downloadsdir(zstd), recursive=true)
-        mkdir(BinDeps.downloadsdir(zstd))
-    end
-
-    vers = v"1.0.0"
-
     provides(Sources, URI("https://github.com/facebook/zstd/archive/v$vers.tar.gz"), zstd,
              unpacked_dir="zstd-$vers")
 

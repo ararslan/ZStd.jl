@@ -1,25 +1,19 @@
 using BinDeps
 
-@BinDeps.setup
+if is_windows()
+    error("The ZStd package does not currently support Windows.")
+end
 
-zstd = library_dependency("zstd", aliases=["libzstd", "libzstd.1"])
+BinDeps.@setup
+
+vers = v"1.1.0"
+
+zstd = library_dependency("zstd", aliases=["libzstd", "libzstd.$(vers.major)", "libzstd.$vers"])
 
 if is_apple()
     using Homebrew
     provides(Homebrew.HB, "zstd", zstd, os=:Darwin)
 else
-    if isdir(srcdir(zstd))
-        rm(srcdir(zstd), recursive=true)
-        mkdir(srcdir(zstd))
-    end
-
-    if isdir(BinDeps.downloadsdir(zstd))
-        rm(BinDeps.downloadsdir(zstd), recursive=true)
-        mkdir(BinDeps.downloadsdir(zstd))
-    end
-
-    vers = v"1.0.0"
-
     provides(Sources, URI("https://github.com/facebook/zstd/archive/v$vers.tar.gz"), zstd,
              unpacked_dir="zstd-$vers")
 
@@ -35,4 +29,4 @@ else
     end), zstd)
 end
 
-@BinDeps.install Dict(:zstd => :libzstd)
+BinDeps.@install Dict(:zstd => :libzstd)

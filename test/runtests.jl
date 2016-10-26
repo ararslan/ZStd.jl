@@ -23,5 +23,5 @@ using Base.Test
     @test typeof(ZStd.maxcompressedsize(UInt(1))) == UInt
     @test ZStd.maxcompressedsize(UInt(1)) > UInt(0)
 
-    @test ZStd.ZSTD_VERSION == v"1.0.0"
+    @test ZStd.ZSTD_VERSION == v"1.1.0"
 end
